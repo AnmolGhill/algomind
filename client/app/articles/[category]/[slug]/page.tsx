@@ -7,7 +7,7 @@ import { ArrowLeft, Tag } from "lucide-react"
 import Link from "next/link"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import "@/styles/article-page.css"
+import "@/styles/global.css"
 
 interface ArticlePageProps {
   params: {

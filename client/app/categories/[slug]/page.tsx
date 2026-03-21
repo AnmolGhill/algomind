@@ -75,7 +75,7 @@ export default async function CategoryPage({ params: awaitedParams }: CategoryPa
         <Header />
         <div className="flex flex-1">
           <Sidebar />
-          <main className="flex-1 lg:ml-64">
+          <main className="flex-1 lg:ml-64 ml-0">
             <div className="container px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
               <div className="text-center">
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">Category Not Found</h1>
@@ -99,7 +99,7 @@ export default async function CategoryPage({ params: awaitedParams }: CategoryPa
       <Header />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 lg:ml-64">
+        <main className="flex-1 lg:ml-64 ml-0">
           <div className="container px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             {/* Category Header */}
             <section className="mb-6 sm:mb-8">
@@ -148,30 +148,26 @@ export default async function CategoryPage({ params: awaitedParams }: CategoryPa
 
             {/* Articles Grid */}
             {articles.length > 0 ? (
-              <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-                {articles.map((article, index) => (
-                  <Link
-                    key={index}
-                    href={`/articles/${article.category}/${article.slug}`}
-                  >
-                    <article className="group border rounded-lg p-4 sm:p-5 hover:shadow-lg transition-all duration-200 hover:border-primary cursor-pointer flex flex-col">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={`text-xs font-medium ${category.color} bg-muted px-2 py-1 rounded`}>
+              <section className="articles-section">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {articles.map((article, index) => (
+                    <Link
+                      key={index}
+                      href={`/articles/${article.category}/${article.slug}`}
+                      className="article-card"
+                    >
+                      <div className="article-meta">
+                        <span className={`article-category ${category.color}`}>
                           {category.name.split(' ')[0]}
                         </span>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Clock className="h-3 w-3" />
                           {article.readTime}
                         </div>
                       </div>
                       
-                      <h3 className="text-base sm:text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                        {article.title}
-                      </h3>
-                      
-                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2 flex-grow">
-                        {article.description}
-                      </p>
+                      <h3 className="article-title">{article.title}</h3>
+                      <p className="article-description">{article.description}</p>
                       
                       <div className="flex flex-wrap gap-1 mb-3">
                         {article.tags.slice(0, 3).map((tag: string, tagIndex: number) => (
@@ -189,20 +185,17 @@ export default async function CategoryPage({ params: awaitedParams }: CategoryPa
                         )}
                       </div>
                       
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground mt-auto">
-                        <span className={`px-2 py-1 rounded ${
-                          article.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
-                          article.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
-                          article.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                      <div className="flex items-center justify-between">
+                        <span className={`article-difficulty difficulty-${article.difficulty.toLowerCase()}`}>
                           {article.difficulty}
                         </span>
-                        <span>{new Date(article.date).toLocaleDateString()}</span>
+                        <span className="article-date">
+                          {new Date(article.date).toLocaleDateString()}
+                        </span>
                       </div>
-                    </article>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
+                </div>
               </section>
             ) : (
               <section className="text-center py-12">
