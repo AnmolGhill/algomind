@@ -21,60 +21,200 @@ Binary search follows these steps:
 
 ## Algorithm Visualization
 
-```
-[1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
- ^                    ^
-Start              End (target = 13)
-
-Middle = (0 + 9) / 2 = 4 → arr[4] = 9
-9 < 13, so search right half: [11, 13, 15, 17, 19]
-
-New Middle = (5 + 9) / 2 = 7 → arr[7] = 15
-15 > 13, so search left half: [11, 13]
-
-New Middle = (5 + 6) / 2 = 5 → arr[5] = 11
-11 < 13, so search right half: [13]
-
-Found! arr[6] = 13
-```
+<!-- DIAGRAM_BLOCK -->
 
 ## Implementation
 
-### Recursive Approach
-```python
-def binary_search_recursive(arr, target, left=0, right=None):
-    if right is None:
-        right = len(arr) - 1
+### Binary Search in Multiple Languages
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int binarySearch(vector<int>& arr, int target) {
+    int left = 0, right = arr.size() - 1;
     
-    if left > right:
-        return -1
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (arr[mid] == target) {
+            return mid;
+        }
+        
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
     
-    mid = (left + right) // 2
+    return -1;
+}
+
+int main() {
+    vector<int> arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
+    int target = 23;
     
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] < target:
-        return binary_search_recursive(arr, target, mid + 1, right)
-    else:
-        return binary_search_recursive(arr, target, left, mid - 1)
+    int result = binarySearch(arr, target);
+    
+    if (result != -1) {
+        cout << "Element found at index " << result << endl;
+    } else {
+        cout << "Element not found in the array" << endl;
+    }
+    
+    return 0;
+}
 ```
 
-### Iterative Approach
+```java
+import java.util.*;
+
+public class BinarySearch {
+    public static int binarySearch(int[] arr, int target) {
+        int left = 0, right = arr.length - 1;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            
+            if (arr[mid] == target) {
+                return mid;
+            }
+            
+            if (arr[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return -1;
+    }
+    
+    public static void main(String[] args) {
+        int[] arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
+        int target = 23;
+        
+        int result = binarySearch(arr, target);
+        
+        if (result != -1) {
+            System.out.println("Element found at index " + result);
+        } else {
+            System.out.println("Element not found in the array");
+        }
+    }
+}
+```
+
 ```python
-def binary_search_iterative(arr, target):
+def binary_search(arr, target):
     left, right = 0, len(arr) - 1
     
     while left <= right:
-        mid = (left + right) // 2
+        mid = left + (right - left) // 2
         
         if arr[mid] == target:
             return mid
-        elif arr[mid] < target:
+        
+        if arr[mid] < target:
             left = mid + 1
         else:
             right = mid - 1
     
     return -1
+
+def main():
+    arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+    target = 23
+    
+    result = binary_search(arr, target)
+    
+    if result != -1:
+        print(f"Element found at index {result}")
+    else:
+        print("Element not found in the array")
+
+if __name__ == "__main__":
+    main()
+```
+
+```c
+#include <stdio.h>
+
+int binarySearch(int arr[], int size, int target) {
+    int left = 0, right = size - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (arr[mid] == target) {
+            return mid;
+        }
+        
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1;
+}
+
+int main() {
+    int arr[] = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    int target = 23;
+    
+    int result = binarySearch(arr, size, target);
+    
+    if (result != -1) {
+        printf("Element found at index %d\n", result);
+    } else {
+        printf("Element not found in the array\n");
+    }
+    
+    return 0;
+}
+```
+
+```javascript
+function binarySearch(arr, target) {
+    let left = 0, right = arr.length - 1;
+    
+    while (left <= right) {
+        const mid = Math.floor(left + (right - left) / 2);
+        
+        if (arr[mid] === target) {
+            return mid;
+        }
+        
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1;
+}
+
+function main() {
+    const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+    const target = 23;
+    
+    const result = binarySearch(arr, target);
+    
+    if (result !== -1) {
+        console.log(`Element found at index ${result}`);
+    } else {
+        console.log("Element not found in the array");
+    }
+}
+
+main();
 ```
 
 ## Time and Space Complexity

@@ -29,76 +29,106 @@ The same subproblems are solved multiple times in the recursive approach.
 
 ## DP Problem-Solving Framework
 
-```
-┌─────────────────────────────────────┐
-│         1. Identify the Problem      │
-│    Does it have optimal substructure │
-│    and overlapping subproblems?     │
-└─────────────────┬───────────────────┘
-                  │ Yes
-                  ▼
-┌─────────────────────────────────────┐
-│         2. Define the State          │
-│   What information do we need to     │
-│   represent each subproblem?        │
-└─────────────────┬───────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────┐
-│      3. Formulate Recurrence         │
-│   Express solution in terms of      │
-│   smaller subproblems               │
-└─────────────────┬───────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────┐
-│    4. Choose Implementation          │
-│   Memoization (Top-Down) or         │
-│   Tabulation (Bottom-Up)            │
-└─────────────────┬───────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────┐
-│       5. Implement & Optimize       │
-│   Write code and optimize for       │
-│   time/space complexity             │
-└─────────────────────────────────────┘
-```
+<!-- DIAGRAM_BLOCK -->
 
 ## Implementation Approaches
 
 ### 1. Memoization (Top-Down)
+
 ```python
-def fibonacci_memo(n, memo={}):
-    if n in memo:
-        return memo[n]
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fibonacci_memo(n):
     if n <= 2:
         return 1
-    
-    memo[n] = fibonacci_memo(n-1, memo) + fibonacci_memo(n-2, memo)
-    return memo[n]
+    return fibonacci_memo(n - 1) + fibonacci_memo(n - 2)
 
-# Time: O(n), Space: O(n)
+# Time: O(n), Space: O(n) for cache + O(n) for recursion stack
+```
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class DynamicProgramming {
+    private static Map<Integer, Integer> memo = new HashMap<>();
+    
+    public static int fibonacciMemo(int n) {
+        if (n <= 2) return 1;
+        if (memo.containsKey(n)) return memo.get(n);
+        
+        int result = fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+        memo.put(n, result);
+        return result;
+    }
+    
+    // Time: O(n), Space: O(n) for cache + O(n) for recursion stack
+}
+```
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+map<int, int> memo;
+
+int fibonacciMemo(int n) {
+    if (n <= 2) return 1;
+    if (memo.find(n) != memo.end()) return memo[n];
+    
+    memo[n] = fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+    return memo[n];
+}
+
+// Time: O(n), Space: O(n) for cache + O(n) for recursion stack
+```
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int* memo;
+
+int fibonacciMemo(int n) {
+    if (n <= 2) return 1;
+    if (memo[n] != -1) return memo[n];
+    
+    memo[n] = fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+    return memo[n];
+}
+
+// Time: O(n), Space: O(n) for cache + O(n) for recursion stack
+```
+
+```javascript
+const memo = new Map();
+
+function fibonacciMemo(n) {
+    if (n <= 2) return 1;
+    if (memo.has(n)) return memo.get(n);
+    
+    const result = fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+    memo.set(n, result);
+    return result;
+}
+
+// Time: O(n), Space: O(n) for cache + O(n) for recursion stack
 ```
 
 ### 2. Tabulation (Bottom-Up)
-```python
-def fibonacci_tab(n):
-    if n <= 2:
-        return 1
-    
-    dp = [0] * (n + 1)
-    dp[1] = dp[2] = 1
-    
-    for i in range(3, n + 1):
-        dp[i] = dp[i-1] + dp[i-2]
-    
-    return dp[n]
 
-# Time: O(n), Space: O(n)
-```
+The tabulation approach builds the solution iteratively from the bottom up, avoiding recursion overhead and potential stack overflow issues.
+
+**Key Differences:**
+- **Memoization**: Recursive + cache (top-down)
+- **Tabulation**: Iterative + table (bottom-up)
+- Both achieve O(n) time complexity for Fibonacci
 
 ### 3. Space Optimization
+
 ```python
 def fibonacci_optimized(n):
     if n <= 2:
@@ -113,6 +143,78 @@ def fibonacci_optimized(n):
     return current
 
 # Time: O(n), Space: O(1)
+```
+
+```java
+public static int fibonacciOptimized(int n) {
+    if (n <= 2) return 1;
+    
+    int prev2 = 1, prev1 = 1;
+    
+    for (int i = 3; i <= n; i++) {
+        int current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+    
+    return prev1;
+}
+
+// Time: O(n), Space: O(1)
+```
+
+```cpp
+int fibonacciOptimized(int n) {
+    if (n <= 2) return 1;
+    
+    int prev2 = 1, prev1 = 1;
+    
+    for (int i = 3; i <= n; i++) {
+        int current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+    
+    return prev1;
+}
+
+// Time: O(n), Space: O(1)
+```
+
+```c
+int fibonacciOptimized(int n) {
+    if (n <= 2) return 1;
+    
+    int prev2 = 1, prev1 = 1;
+    
+    for (int i = 3; i <= n; i++) {
+        int current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+    
+    return prev1;
+}
+
+// Time: O(n), Space: O(1)
+```
+
+```javascript
+function fibonacciOptimized(n) {
+    if (n <= 2) return 1;
+    
+    let prev2 = 1, prev1 = 1;
+    
+    for (let i = 3; i <= n; i++) {
+        const current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+    
+    return prev1;
+}
+
+// Time: O(n), Space: O(1)
 ```
 
 ## Common DP Patterns
@@ -138,6 +240,95 @@ def knapsack_01(weights, values, capacity):
     return dp[n][capacity]
 ```
 
+```java
+public static int knapsack01(int[] weights, int[] values, int capacity) {
+    int n = weights.length;
+    int[][] dp = new int[n + 1][capacity + 1];
+    
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (weights[i-1] <= w) {
+                dp[i][w] = Math.max(
+                    dp[i-1][w],  // Skip item
+                    dp[i-1][w-weights[i-1]] + values[i-1]  // Take item
+                );
+            } else {
+                dp[i][w] = dp[i-1][w];
+            }
+        }
+    }
+    
+    return dp[n][capacity];
+}
+```
+
+```cpp
+int knapsack01(vector<int>& weights, vector<int>& values, int capacity) {
+    int n = weights.size();
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+    
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (weights[i-1] <= w) {
+                dp[i][w] = max(
+                    dp[i-1][w],  // Skip item
+                    dp[i-1][w-weights[i-1]] + values[i-1]  // Take item
+                );
+            } else {
+                dp[i][w] = dp[i-1][w];
+            }
+        }
+    }
+    
+    return dp[n][capacity];
+}
+```
+
+```c
+int knapsack01(int* weights, int* values, int n, int capacity) {
+    int dp[n + 1][capacity + 1];
+    
+    for (int i = 0; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (i == 0 || w == 0) {
+                dp[i][w] = 0;
+            } else if (weights[i-1] <= w) {
+                dp[i][w] = max(
+                    dp[i-1][w],  // Skip item
+                    dp[i-1][w-weights[i-1]] + values[i-1]  // Take item
+                );
+            } else {
+                dp[i][w] = dp[i-1][w];
+            }
+        }
+    }
+    
+    return dp[n][capacity];
+}
+```
+
+```javascript
+function knapsack01(weights, values, capacity) {
+    const n = weights.length;
+    const dp = Array(n + 1).fill().map(() => Array(capacity + 1).fill(0));
+    
+    for (let i = 1; i <= n; i++) {
+        for (let w = 0; w <= capacity; w++) {
+            if (weights[i-1] <= w) {
+                dp[i][w] = Math.max(
+                    dp[i-1][w],  // Skip item
+                    dp[i-1][w-weights[i-1]] + values[i-1]  // Take item
+                );
+            } else {
+                dp[i][w] = dp[i-1][w];
+            }
+        }
+    }
+    
+    return dp[n][capacity];
+}
+```
+
 ### 2. Longest Common Subsequence (LCS)
 **Problem**: Find longest sequence common to two strings.
 
@@ -156,6 +347,84 @@ def lcs(s1, s2):
     return dp[m][n]
 ```
 
+```java
+public static int lcs(String s1, String s2) {
+    int m = s1.length(), n = s2.length();
+    int[][] dp = new int[m + 1][n + 1];
+    
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (s1.charAt(i-1) == s2.charAt(j-1)) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    
+    return dp[m][n];
+}
+```
+
+```cpp
+int lcs(string s1, string s2) {
+    int m = s1.length(), n = s2.length();
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+    
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (s1[i-1] == s2[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    
+    return dp[m][n];
+}
+```
+
+```c
+int lcs(char* s1, char* s2) {
+    int m = strlen(s1), n = strlen(s2);
+    int dp[m + 1][n + 1];
+    
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            if (i == 0 || j == 0) {
+                dp[i][j] = 0;
+            } else if (s1[i-1] == s2[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = dp[i-1][j] > dp[i][j-1] ? dp[i-1][j] : dp[i][j-1];
+            }
+        }
+    }
+    
+    return dp[m][n];
+}
+```
+
+```javascript
+function lcs(s1, s2) {
+    const m = s1.length, n = s2.length;
+    const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+    
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i-1] === s2[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    
+    return dp[m][n];
+}
+```
+
 ### 3. Coin Change Problem
 **Problem**: Find minimum number of coins to make up a given amount.
 
@@ -169,6 +438,79 @@ def coin_change(coins, amount):
             dp[i] = min(dp[i], dp[i - coin] + 1)
     
     return dp[amount] if dp[amount] != float('inf') else -1
+```
+
+```java
+public static int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, Integer.MAX_VALUE);
+    dp[0] = 0;
+    
+    for (int coin : coins) {
+        for (int i = coin; i <= amount; i++) {
+            if (dp[i - coin] != Integer.MAX_VALUE) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+    
+    return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+}
+```
+
+```cpp
+int coinChange(vector<int>& coins, int amount) {
+    vector<int> dp(amount + 1, INT_MAX);
+    dp[0] = 0;
+    
+    for (int coin : coins) {
+        for (int i = coin; i <= amount; i++) {
+            if (dp[i - coin] != INT_MAX) {
+                dp[i] = min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+    
+    return dp[amount] == INT_MAX ? -1 : dp[amount];
+}
+```
+
+```c
+int coinChange(int* coins, int coinsSize, int amount) {
+    int dp[amount + 1];
+    for (int i = 0; i <= amount; i++) {
+        dp[i] = INT_MAX;
+    }
+    dp[0] = 0;
+    
+    for (int i = 0; i < coinsSize; i++) {
+        int coin = coins[i];
+        for (int j = coin; j <= amount; j++) {
+            if (dp[j - coin] != INT_MAX) {
+                dp[j] = dp[j] < dp[j - coin] + 1 ? dp[j] : dp[j - coin] + 1;
+            }
+        }
+    }
+    
+    return dp[amount] == INT_MAX ? -1 : dp[amount];
+}
+```
+
+```javascript
+function coinChange(coins, amount) {
+    const dp = Array(amount + 1).fill(Infinity);
+    dp[0] = 0;
+    
+    for (const coin of coins) {
+        for (let i = coin; i <= amount; i++) {
+            if (dp[i - coin] !== Infinity) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+    
+    return dp[amount] === Infinity ? -1 : dp[amount];
+}
 ```
 
 ## State Definition Examples
